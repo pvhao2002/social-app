@@ -24,6 +24,14 @@ namespace Social_App.BUS
 
         }
 
+        public bool sendComment(string sql)
+        {
+            return CommentDao.Instance.sendComment(sql);
+        }
+        public List<UserComment> findAll(int postid)
+        {
+            return CommentDao.Instance.findAll(postid);
+        }
         public List<Comment> findAllById(int commentId)
         {
             return CommentDao.Instance.findAllById(commentId);

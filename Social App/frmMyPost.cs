@@ -25,6 +25,14 @@ namespace Social_App
         }
         void loadListPost()
         {
+            if(myListPost != null)
+            {
+                if(myListPost.Count > 0)
+                {
+                    myListPost.Clear();
+                }
+            }
+
             myListPost = PostBUS.Instance.findAllById(currentUser.user_id);
         }
        
@@ -36,7 +44,8 @@ namespace Social_App
             container.Height = 400;
             container.BackColor = Color.LightGray;
             container.Margin = new Padding(35, 20, 35, 20);
-
+            container.Tag = item;
+            container.Click += Container_Click;
 
 
 
@@ -47,18 +56,23 @@ namespace Social_App
             totalCmt.Font = new Font(lbName.Font.FontFamily, 12, FontStyle.Regular);
             totalCmt.AutoSize = false;
             totalCmt.ForeColor = Color.Black;
-            totalCmt.Text = "12 comments";
+            int countCMT = CommentBUS.Instance.findAllCommentInPost(item.post_id).Count;
+            totalCmt.Text = countCMT.ToString() + " comments";
+            totalCmt.Tag = item;
             totalCmt.TextAlign = ContentAlignment.MiddleRight;
+            totalCmt.Click += Container_Click;
 
             Panel containPicture = new Panel();
             containPicture.Height = 200;
             container.Controls.Add(containPicture);
             containPicture.Dock = DockStyle.Top;
+            containPicture.Tag = item;
+            containPicture.Click += Container_Click;
 
             // picture box post
             PictureBox picPost = new PictureBox();
             picPost.Width = 400;
-
+            picPost.Tag = item;
             picPost.SizeMode = PictureBoxSizeMode.Zoom;
             picPost.Padding = new Padding(5);
             containPicture.Controls.Add(picPost);
@@ -73,6 +87,7 @@ namespace Social_App
 
                 picPost.Image = picLogo1.ErrorImage;
             }
+            picPost.Click += Container_Click;
 
 
 
@@ -87,23 +102,15 @@ namespace Social_App
             caption.Enabled = false;
             caption.BorderStyle = BorderStyle.None;
             caption.Tag = item;
-            // label Caption post;
-            //Label caption = new Label();
-            //container.Controls.Add(caption);
-            //caption.Dock = DockStyle.Top;
-            //caption.AutoSize = false;
-            //caption.Font = new Font(lbName.Font.FontFamily, 12, FontStyle.Regular);
-            //caption.Text = item.message;
-            //caption.ForeColor = Color.Black;
-            //caption.Height = 50;
-            //caption.Padding = new Padding(10, 4, 10, 4);
+            caption.Click += Container_Click;
 
             // header post
             Panel headerPost = new Panel();
             container.Controls.Add(headerPost);
             headerPost.Dock = DockStyle.Top;
             headerPost.Height = 75;
-
+            headerPost.Tag = item;
+            headerPost.Click += Container_Click;
 
 
             // Label name and date time of post
@@ -201,6 +208,50 @@ namespace Social_App
             flPanelPost.Controls.Add(container);
         }
 
+        private void Container_Click(object sender, EventArgs e)
+        {
+            string[] component = sender.GetType().ToString().Split('.');
+            string tmp = component[component.Length - 1];
+            Label lb = null;
+            Panel pn = null;
+            PictureBox pic = null;
+            RichTextBox rtxt = null;
+            Post cpost = null;
+            if (tmp == "Label")
+            {
+                lb = sender as Label;
+                cpost = lb.Tag as Post;
+            }
+            else if (tmp == "Panel")
+            {
+                pn = sender as Panel;
+                cpost = pn.Tag as Post;
+            }
+            else if (tmp == "PictureBox")
+            {
+                pic = sender as PictureBox;
+                cpost = pic.Tag as Post;
+            }
+            else
+            {
+                rtxt = sender as RichTextBox;
+                cpost = rtxt.Tag as Post;
+            }
+
+            if(cpost != null)
+            {
+                frmComment frmComment = new frmComment(cpost, currentUser);
+                this.Hide();
+                frmComment.ShowDialog();
+                this.Show();
+                flPanelPost.Controls.Clear();
+                loadListPost();
+                loadComponents();
+                loadImage();
+                loadLabel();
+            }
+        }
+
         private void BtnEditPost_MouseMove(object sender, MouseEventArgs e)
         {
             Button btnEdit = sender as Button;
@@ -277,6 +328,7 @@ namespace Social_App
         }
         void loadComponents()
         {
+
             foreach (Post item in myListPost)
             {
                 loadAComponent(item);
