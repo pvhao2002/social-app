@@ -111,6 +111,8 @@ namespace Social_App
                     // display image in picture box  
                     picPost.Image = new Bitmap(open.FileName);
                     picPost.Tag = open.FileName;
+                    btnPost.Enabled = true;
+                    btnPost.BackColor = Color.Blue;
                     //currentUser.image = open.FileName;
                     // image file path  
                     //MessageBox.Show(open.FileName);

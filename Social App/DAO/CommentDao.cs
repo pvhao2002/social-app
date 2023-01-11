@@ -25,7 +25,40 @@ namespace Social_App.DAO
         {
 
         }
+        public bool sendComment(string sql)
+        {
+            try
+            {
+                DBConnect.Instance.ExecuteUpdateQuery(sql);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
 
+        public List<UserComment> findAll(int  postid)
+        {
+            List<UserComment> list = new List<UserComment>();
+            string sql = "SELECT comment_id, post_id, users.user_id, content, comment_time, name, image " +
+                "FROM comments, users WHERE comments.user_id = users.user_id and post_id = " + postid.ToString()
+                + " ORDER BY comment_time";
+            DataTable data = DBConnect.Instance.ExecuteQuery_DataTable(sql);
+            foreach (DataRow item in data.Rows)
+            {
+                int comment_id = (int)item["comment_id"];
+                int post_id = (int)item["post_id"];
+                int user_id = (int)item["user_id"];
+                string content = item["content"].ToString();
+                DateTime? comment_time = item["comment_time"].ToString() == string.Empty ? null : (DateTime?)item["comment_time"];
+                string name = item["name"].ToString();
+                string image = item["image"].ToString();
+                UserComment item1 = new UserComment(comment_id, post_id, user_id, content, comment_time, name, image);
+                list.Add(item1);
+            }
+            return list;
+        }
 
         public List<Comment> findAllById(int id)
         {
@@ -38,7 +71,7 @@ namespace Social_App.DAO
                 int post_id = (int)item["post_id"];
                 int user_id = (int)item["user_id"];
                 string content = item["content"].ToString();
-                DateTime comment_time = DateTime.Parse(item["comment_time"].ToString());
+                DateTime? comment_time = item["comment_time"].ToString() == string.Empty ? null : (DateTime?)item["comment_time"];
                 Comment cmt = new Comment(comment_id, post_id, user_id, content, comment_time);
                 list.Add(cmt);
             }
@@ -55,7 +88,7 @@ namespace Social_App.DAO
                 int post_id = (int)item["post_id"];
                 int user_id = (int)item["user_id"];
                 string content = item["content"].ToString();
-                DateTime comment_time = DateTime.Parse(item["comment_time"].ToString());
+                DateTime? comment_time = item["comment_time"].ToString() == string.Empty ? null : (DateTime?)item["comment_time"];
                 Comment cmt = new Comment(comment_id, post_id, user_id, content, comment_time);
                 list.Add(cmt);
             }

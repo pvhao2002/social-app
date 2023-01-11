@@ -60,6 +60,7 @@
     <Compile Include="DTO\Message.cs" />
     <Compile Include="DTO\Post.cs" />
     <Compile Include="DTO\User.cs" />
+    <Compile Include="DTO\UserComment.cs" />
     <Compile Include="EditPost.cs">
       <SubType>Form</SubType>
     </Compile>

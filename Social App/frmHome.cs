@@ -38,7 +38,6 @@ namespace Social_App
             }
             catch (Exception)
             {
-                picUser1.Image = picUser1.ErrorImage;
             }
 
             try
@@ -48,7 +47,6 @@ namespace Social_App
             catch (Exception)
             {
 
-                btnHome.Image = picUser1.ErrorImage;
             }
             try
             {
@@ -57,7 +55,6 @@ namespace Social_App
             catch (Exception)
             {
 
-                btnInfo.Image = picUser1.ErrorImage;
             }
 
             try
@@ -67,7 +64,6 @@ namespace Social_App
             catch (Exception)
             {
                 //MessageBox.Show(ex.Message);
-                btnSearch.Image = picUser1.ErrorImage;
             }
             try
             {
@@ -75,7 +71,6 @@ namespace Social_App
             }
             catch (Exception)
             {
-                btnPost.Image = picUser1.ErrorImage;
             }
         }
         private void frmHome_Load(object sender, EventArgs e)
@@ -106,7 +101,14 @@ namespace Social_App
             btnFriend.Text = item.name;
             btnFriend.Font = new Font(lbPost.Font.FontFamily, 12, FontStyle.Regular);
             btnFriend.TextAlign = ContentAlignment.MiddleLeft;
-            btnFriend.Image = (Image)(new Bitmap(Image.FromFile(item.image), new Size(25, 25)));
+            try
+            {
+                btnFriend.Image = (Image)(new Bitmap(Image.FromFile(item.image), new Size(25, 25)));
+            }
+            catch (Exception)
+            {
+            }
+            
             btnFriend.ImageAlign = ContentAlignment.MiddleLeft;
             btnFriend.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnFriend.Tag = item;
@@ -187,8 +189,6 @@ namespace Social_App
             }
             catch (Exception)
             {
-
-                picPost.Image = pictureBox1.ErrorImage;
             }
 
 
@@ -256,7 +256,6 @@ namespace Social_App
             }
             catch (Exception)
             {
-                picAvartar.Image = picUser1.ErrorImage;
             }
             flpanelPost.Controls.Add(container);
         }
@@ -286,7 +285,13 @@ namespace Social_App
             }
             if(cpost != null)
             {
-                MessageBox.Show(cpost.ToString());
+                User poster = UserBUS.Instance.getItem(cpost.user_id);
+                frmComment frmComment = new frmComment(cpost, currentUser, poster);
+                this.Hide();
+                frmComment.ShowDialog();
+                this.Show();
+
+                btnHome_Click(sender, e);
             }
             
         }
